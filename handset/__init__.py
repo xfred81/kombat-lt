@@ -40,6 +40,9 @@ class Button:
             pyautogui.mouseUp()
         except Exception:
             pass
+        
+    def cancel(self):
+        self._press_total_time = 0
 
     def learn_press(self, dx: int, dy: int):
         """Declare a new movement implied by the button.

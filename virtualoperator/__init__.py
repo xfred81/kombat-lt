@@ -12,6 +12,7 @@ class Operator:
         self._eyes = Eyes()
         self._pattern = pattern
         self._p0 = None
+        self._drift = None
         
         print("Finding pattern's original position... ", end='')
         while self._p0 is None:
@@ -36,12 +37,33 @@ class Operator:
         if p0 is not None and p1 is not None:
             dx = p1[0] - p0[0]
             dy = p1[1] - p0[1]
-            self._handset.get_button(b).add_delta(dx, dy)
             return dx, dy
         else:
             return None        
 
+    def _measure_drift(self):
+        
+        print("Measuring normal drift: ", end='', flush=True)
+        tme = 3
+        time.sleep(tme)
+        p1 = None
+        while p1 is None:
+            p1 = self._find_pattern()
+            time.sleep(1)
+            tme += 1
+
+        dx = p1[0] - self._p0[0]  
+        dy = p1[1] - self._p0[1]
+
+        self._drift = dx, dy, math.sqrt(dx**2+dy**2)
+        print(f"({self._drift})")
+        
+        
     def learn(self):
+        self._measure_drift()
+        
+        
+        
         buttons = self._handset.get_buttons_number()
         its = 2
         
@@ -53,10 +75,24 @@ class Operator:
                 m = None
                 while m is None:
                     m = self._press_and_measure(b)
+                    if m is not None:
+                        dt = math.sqrt(m[0]**2+m[1]**2)
+                        if dt < self._drift[2]*4:
+                            m = None
+                            print(f"(dt={dt}, too low, retry)")
+                            self._handset.get_button(b).cancel()
+                        else:
+                            self._handset.get_button(b).learn_press(m[0], m[1])
+                    else:
+                        print("(no pattern, retry)")
                     
                 it += 1
                 pc = (it*100)/tot
                 print("\rCalibration: {:.1f}".format(pc), end='')
+                
+        print("Calibrated with following information:")
+        for i in range(0, buttons):
+            print(f" - b{i} {self._handset.get_button(i).expected_motion}")
                 
     @staticmethod    
     def _delta(v0, v1):
