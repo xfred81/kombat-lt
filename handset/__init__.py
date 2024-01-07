@@ -20,14 +20,21 @@ class Button:
 
         Returns: x, y coordinates (or None)
         """
-        return pyautogui.locateCenterOnScreen(self._btn)
+        try:
+            r = pyautogui.locateCenterOnScreen(self._btn)
+        except Exception:
+            r = None
+        return r
 
     def press(self):
-        pyautogui.moveTo(self.pos)
-        pyautogui.mouseDown()
-        time.sleep(self._press_step_time)
-        self._press_total_time += self._press_step_time
-        pyautogui.mouseUp()
+        try:
+            pyautogui.moveTo(self.pos)
+            pyautogui.mouseDown()
+            time.sleep(self._press_step_time)
+            self._press_total_time += self._press_step_time
+            pyautogui.mouseUp()
+        except Exception:
+            pass
 
     def add_delta(self, dx: int, dy: int):
         """Declare a new movement implied by the button.

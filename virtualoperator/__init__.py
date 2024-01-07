@@ -69,8 +69,10 @@ class Operator:
         
         while p1 is None:
             p1 = self._find_pattern()
-            time.sleep(1)
-     
+            if p1 is None:
+                time.sleep(1)
+                print("Can't find pattern")
+            
         dx, dy, dt = self._delta(self._p0, p1)   
         
         buttons = self._handset.get_buttons_number()
