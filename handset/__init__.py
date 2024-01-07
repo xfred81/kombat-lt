@@ -1,8 +1,9 @@
 import pyautogui
 import time
 
+
 class Button:
-    """Button on handset's GUI
+    """Button on handset's GUI.
     """
     def __init__(self, btn: str):
         self._btn = btn
@@ -27,6 +28,10 @@ class Button:
         return r
 
     def press(self):
+        """Simulate usage of the button.
+           Pointer will be moved over the button, and an event will simulate a press on the mouse's left button for
+           step._press_step_time, and then released.
+        """
         try:
             pyautogui.moveTo(self.pos)
             pyautogui.mouseDown()
@@ -36,11 +41,12 @@ class Button:
         except Exception:
             pass
 
-    def add_delta(self, dx: int, dy: int):
+    def learn_press(self, dx: int, dy: int):
         """Declare a new movement implied by the button.
         
-        This allows to "average" movement and compute a more accurate "expection motion"
-        when a particular button is pressed.
+        To be used after the press() method above;
+        This "averages" movement and compute a more accurate "expected motion"
+        when a button is pressed.
 
         Args:
             dx (int): apparent movement on x-axis
@@ -52,7 +58,7 @@ class Button:
 
         dx = 0
         dy = 0
-        
+
         for i in self._data:
             dx += i[1]/(i[0]/self._press_step_time)
             dy += i[2]/(i[0]/self._press_step_time)
@@ -73,17 +79,29 @@ class Button:
 
 
 class Handset:
+    """A virtual handset.
+    """
     def __init__(self, name: str, path: str, button_filenames: list):
         self._buttons = []
         self._name = name
         for i in button_filenames:
             self._buttons.append(Button(f"{path}/{i}.png"))
-            
+
     @property
-    def name(self):
+    def name(self) -> str:
+        """Get the name of the handset.
+
+        Returns:
+            str: Name (as KStars Control)
+        """
         return self._name
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
+        """Test if handset is initialized.
+
+        Returns:
+            bool: True if all buttons have been detected.
+        """
         for b in self._buttons:
             if b.pos is None:
                 return False
@@ -91,7 +109,20 @@ class Handset:
         return True
 
     def get_button(self, idx: int) -> Button:
+        """Return the indicated button.
+
+        Args:
+            idx (int): Index of the desired button
+
+        Returns:
+            Button: result is a Button object
+        """
         return self._buttons[idx]
-    
-    def get_buttons_number(self):
+
+    def get_buttons_number(self) -> int:
+        """Return the number of buttons. 
+
+        Returns:
+            int: Number of buttons on the handset.
+        """
         return len(self._buttons)
