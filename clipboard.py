@@ -10,13 +10,13 @@ class Clipboard:
     """
     def __init__(self):
         clipboard = None
-        print("Waiting for the pattern to track in clipboard...")
+        print("Waiting for the pattern to track in clipboard... ", end='')
         while not isinstance(clipboard, Image.Image):
             clipboard = ImageGrab.grabclipboard()
             time.sleep(1)
 
         self._contents = cv2.cvtColor(np.array(clipboard), cv2.COLOR_RGB2GRAY)
-        print("Got the pattern!")
+        print("ok")
         
     def as_grayscale(self) -> np.array:
         """Get clipboard as a grayscale image

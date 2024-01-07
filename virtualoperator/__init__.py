@@ -13,12 +13,12 @@ class Operator:
         self._pattern = pattern
         self._p0 = None
         
-        print("Finding pattern's original position...")
+        print("Finding pattern's original position... ", end='')
         while self._p0 is None:
             self._p0 = self._find_pattern()
             time.sleep(1)
         
-        print("Original position stored.")
+        print("ok.")
         self.learn()
         print("\rVirtual operator is ready.")
         
@@ -69,6 +69,7 @@ class Operator:
         
         while p1 is None:
             p1 = self._find_pattern()
+            time.sleep(1)
      
         dx, dy, dt = self._delta(self._p0, p1)   
         

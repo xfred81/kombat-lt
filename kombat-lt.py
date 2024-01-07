@@ -11,7 +11,7 @@ clipboard = Clipboard()
 handset = Handset()
 
 if handset.is_valid():
-    print("Handset has been found.")
+    print(f"{handset.name} has been found.")
 else:
     print("Handset not found...")
     sys.exit(1)
@@ -22,6 +22,6 @@ dt = 100
 while True:
     while dt>10:
         dt = operator.guide_once()
-        print(f"\rdelta={dt}", end='')
+        print("\rdelta={:.1f}".format(dt), end='')
     time.sleep(3)
     dt = 10+1
