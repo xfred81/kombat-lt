@@ -1,13 +1,13 @@
 # kombat-lt
 
 KOMBAT live tracker is based on the KOMBAT algorithm, formerly integrated in Siril 1.2.
-It is here used to track a pattern (eg. planetary surface1), and to propose a guiding through KStars control handset.
+It is here used to track a pattern (eg. planetary surface), and to propose an automatic guiding through KStars control handset.
 
 ## Why?
 
 I wrote this program because I use ```KStars``` for DSO astrophotography, especially because of its specific features (support of focuser,
 astrometry alignment, etc.) but I prefer ```FireCapture``` when I switch to planetary sessions. And when I use its internal guiding, it seems to conflict
-which ```Ekos``` and the tracking stops.
+which ```Ekos``` and the tracking stops. A cloudy weekend made my mind, and I implemented this little tool.
 
 ## Installation
 
