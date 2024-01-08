@@ -7,42 +7,42 @@ import math
 
 
 class Operator:
-    def __init__(self, handset: Handset, pattern: np.array):
+    def __init__(self, handset: Handset, pattern: np.array, config: hash):
         self._handset = handset
         self._eyes = Eyes()
         self._pattern = pattern
         self._p0 = None
         self._drift = None
+        self._config = config
         
         print("Finding pattern's original position... ", end='')
         while self._p0 is None:
             self._p0 = self._find_pattern()
             time.sleep(1)
-        
+
         print("ok.")
         self.learn()
         print("\rVirtual operator is ready.")
-        
+
     def _find_pattern(self):
         return self._eyes.find(self._pattern)
-    
+
     def _press_and_measure(self, b: int):
         p0 = self._find_pattern()
-        
+
         self._handset.get_button(b).press()
-        time.sleep(2)
-        
+        time.sleep(self._config['press_delay'])
+
         p1 = self._find_pattern()
-        
+
         if p0 is not None and p1 is not None:
             dx = p1[0] - p0[0]
             dy = p1[1] - p0[1]
             return dx, dy
         else:
-            return None        
+            return None
 
     def _measure_drift(self):
-        
         print("Measuring normal drift: ", end='', flush=True)
         tme = 3
         time.sleep(tme)
@@ -61,9 +61,7 @@ class Operator:
         
     def learn(self):
         self._measure_drift()
-        
-        
-        
+
         buttons = self._handset.get_buttons_number()
         its = 2
         
@@ -90,30 +88,32 @@ class Operator:
                 pc = (it*100)/tot
                 print("\rCalibration: {:.1f}".format(pc), end='')
                 
-        print("Calibrated with following information:")
+        print("\nCurrent calibration:")
         for i in range(0, buttons):
             print(f" - b{i} {self._handset.get_button(i).expected_motion}")
+            
+        print("\nCalibration information will be adjusted along the time")
                 
     @staticmethod    
     def _delta(v0, v1):
         dx = v1[0] - v0[0]
         dy = v1[1] - v0[1]
         return dx, dy, math.sqrt(dx**2+dy**2)
-                   
+
     def guide_once(self):
         p1 = None
-        
+
         while p1 is None:
             p1 = self._find_pattern()
             if p1 is None:
                 time.sleep(1)
                 print("Can't find pattern")
-            
+
         dx, dy, dt = self._delta(self._p0, p1)   
-        
+
         buttons = self._handset.get_buttons_number()
-        
-        if dt > 10:   
+
+        if dt > self._config['desired_dt']:
             min_ndt = None
             min_ndt_b = None
             for b in range(0, buttons):
