@@ -25,6 +25,7 @@ My routine:
 * Start a terminal and minimize it (eg. so that only 3 lines are visible),
 * Run ```FireCapture``` and adjust settings (gain, etc.),
 * For a more accurate guiding, use the 100% view,
+* Adjust speed ratio of KStars' control to adjust moves to corrections,
 * Identify a target zone that could be used for tracking (not to close to screen's border nor to another window above),
 * Make a screenshot of this zone and keep it in clipboard,
 * Close the screenshot app!
